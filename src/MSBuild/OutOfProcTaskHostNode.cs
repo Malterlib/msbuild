@@ -545,7 +545,13 @@ namespace Microsoft.Build.CommandLine
             _savedEnvironment = CommunicationsUtilities.GetEnvironmentVariables();
 
 #if FEATURE_NAMED_PIPES_FULL_DUPLEX
-            string pipeName = "MSBuild" + Process.GetCurrentProcess().Id;
+            string msbuildPipeName = Environment.GetEnvironmentVariable("MSBUILD_PIPE_NAME");
+            if (String.IsNullOrEmpty(msbuildPipeName))
+            {
+                msbuildPipeName = "MSBuild";
+            }
+            
+            string pipeName = msbuildPipeName + Process.GetCurrentProcess().Id;
 
             _nodeEndpoint = new NodeEndpointOutOfProcTaskHost(pipeName);
 #else

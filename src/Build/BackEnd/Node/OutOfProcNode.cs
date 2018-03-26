@@ -287,7 +287,14 @@ namespace Microsoft.Build.Execution
         {
 #if FEATURE_NAMED_PIPES_FULL_DUPLEX
             // Console.WriteLine("Run called at {0}", DateTime.Now);
-            string pipeName = "MSBuild" + Process.GetCurrentProcess().Id;
+
+            string msbuildPipeName = Environment.GetEnvironmentVariable("MSBUILD_PIPE_NAME");
+            if (String.IsNullOrEmpty(msbuildPipeName))
+            {
+                msbuildPipeName = "MSBuild";
+            }
+            
+            string pipeName = msbuildPipeName + Process.GetCurrentProcess().Id;
 
             _nodeEndpoint = new NodeEndpointOutOfProc(pipeName, this, enableReuse);
 #else
